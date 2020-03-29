@@ -4,7 +4,7 @@ const Post = require('./models/Post');
 
 const bodyParser = require('body-parser');
 
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
 
@@ -28,16 +28,29 @@ app.get('/allPosts', function (req, res) {
 
 
 app.post('/add', function(req,res){
+
+    
     Post.create({
         titulo: req.body.titulo,
         conteudo: req.body.conteudo
     }).then(() => {
-        res.redirect("http://192.168.0.107:8080");
+        // res.redirect("http://192.168.0.107:8080");
+        res.send(req.body);
     }).catch(() => {
         res.send("Houve um erro: " + erro);
     })
 })
 
+
+app.get('/deletar/:id', function(req,res) {
+    res.header('Access-Control-Allow-Origin', '*');
+    Post.destroy({where: {'id': req.params.id}}).then(() =>{
+        res.send("Postagens deletada com sucesso!!");
+    }).catch(() =>{
+        res.send("Essa postagens não existe!!");
+    })
+
+});
 
 
 
